@@ -28,6 +28,13 @@ install_if_missing git git
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     echo "Installing Oh My Zsh..."
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    
+    echo "Installing Zsh plugins..."
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    
+    # Update plugins list in .zshrc
+    sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/' ~/.zshrc
 fi
 
 # Install Starship and Nerd Fonts
@@ -74,6 +81,29 @@ if ! command -v pyenv &> /dev/null; then
     
     echo "Installing Python 3.12..."
     pyenv install 3.12
+fi
+
+# Add git aliases if they don't exist
+if ! grep -q "# Git aliases" "$HOME/.zshrc"; then
+    echo "Adding git aliases..."
+    {
+        echo '# Git aliases'
+        echo 'alias gs="git status"'
+        echo 'alias ga="git add"'
+        echo 'alias gaa="git add --all"'
+        echo 'alias gc="git commit -m"'
+        echo 'alias gp="git push"'
+        echo 'alias gpl="git pull"'
+        echo 'alias gb="git branch"'
+        echo 'alias gco="git checkout"'
+        echo 'alias gd="git diff"'
+        echo 'alias gl="git log --oneline"'
+        echo 'alias grh="git reset --hard"'
+        echo 'alias grs="git reset --soft"'
+        echo 'alias gst="git stash"'
+        echo 'alias gstp="git stash pop"'
+        echo 'alias gm="git merge"'
+    } >> "$HOME/.zshrc"
 fi
 
 echo "Setup completed successfully!"
