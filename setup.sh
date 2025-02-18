@@ -60,27 +60,11 @@ if ! command -v starship &> /dev/null; then
     fi
 fi
 
-# Install pyenv
-if ! command -v pyenv &> /dev/null; then
-    echo "Installing pyenv..."
-    curl https://pyenv.run | bash
-    
-    if ! grep -q "PYENV_ROOT" "$HOME/.zshrc"; then
-        {
-            echo 'export PYENV_ROOT="$HOME/.pyenv"'
-            echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'
-            echo 'eval "$(pyenv init -)"'
-            echo 'eval "$(pyenv virtualenv-init -)"'
-        } >> "$HOME/.zshrc"
-    fi
-    
-    # Source the updated configuration
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
-    
-    echo "Installing Python 3.12..."
-    pyenv install 3.12
+# Install uv
+if ! command -v uv &> /dev/null; then
+    echo "Installing uv ..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    uv python install 3.12
 fi
 
 # Add git aliases if they don't exist
